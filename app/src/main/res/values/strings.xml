@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Repos test</string>
+    <string name="retry">Retry</string>
+    <string name="gallery_error">An error occurred while loading the images from gallery</string>
+    <string name="error_load_data">An Error Occurred While Loading Data!</string>
+    <string name="stars_repo_details">Stars</string>
+    <string name="forks_repo_details">Forks</string>
+    <string name="repo_name_place_holder_txt">REPO NAME</string>
+    <string name="repo_name_placeholder">REPO NAME</string>
+    <string name="stars_rating_label">Stars Rating</string>
+    <string name="forks_label">Forks: </string>
+    <string name="google_repos_title">GOOGLE REPOS</string>
+</resources>
