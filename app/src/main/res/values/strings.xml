@@ -10,4 +10,5 @@
     <string name="stars_rating_label">Stars Rating</string>
     <string name="forks_label">Forks: </string>
     <string name="google_repos_title">GOOGLE REPOS</string>
+    <string name="act_like">Choose Action</string>
 </resources>
