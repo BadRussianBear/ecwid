@@ -26,4 +26,8 @@ class ProductRepository @Inject constructor(var productDao: ProductDao) {
     fun insertProds(product: List<Product>){
         return productDao.insertProds(product)
     }
+
+    fun insertProd(product: Product){
+        return productDao.insertProd(product)
+    }
 }

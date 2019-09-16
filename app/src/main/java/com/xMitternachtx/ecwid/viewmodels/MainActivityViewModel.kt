@@ -24,6 +24,10 @@ constructor(
         productRepository.insertProds(prods)
     }
 
+    fun addProduct(prod: Product){
+        productRepository.insertProd(prod)
+    }
+
     fun setProduct(product: Product, adapterPosition: Int){
         name.value = product
         pos.value = adapterPosition

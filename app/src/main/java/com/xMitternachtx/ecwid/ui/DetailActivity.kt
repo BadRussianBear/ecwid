@@ -55,7 +55,7 @@ class DetailActivity : AppCompatActivity() {
     companion object {
         const val product_name = "name"
 
-        fun startActivity(activity: Activity, product: Product, view: View) {
+        fun startActivity(activity: Activity, product: Product) {
             val intent = Intent(activity, DetailActivity::class.java)
             intent.putExtra(product_name, product.name)
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, view, ViewCompat.getTransitionName(view)!!)

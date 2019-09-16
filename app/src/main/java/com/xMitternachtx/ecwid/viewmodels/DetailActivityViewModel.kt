@@ -22,6 +22,10 @@ constructor(repository: ProductRepository) : ViewModel() {
     fun setProd(prod: String) {
         name.value = prod
     }
+
+    fun getProdName() : String?{
+        return name.value;
+    }
 }
 
 class AbsentLiveData<T> : LiveData<T>() {

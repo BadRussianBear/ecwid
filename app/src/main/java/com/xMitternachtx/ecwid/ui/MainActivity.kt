@@ -1,13 +1,14 @@
 package com.xMitternachtx.ecwid.ui
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.xMitternachtx.ecwid.R
 import com.xMitternachtx.ecwid.adapter.ProductAdapter
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onEditClick(dialog: DialogFragment) {
-        DetailActivity.startActivity(this, viewModel.getProduct(), viewModel.getView())
+        DetailActivity.startActivity(this, viewModel.getProduct())
 
     }
 
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
 
         main_fab.setOnClickListener{
-            showAddDialog();
+            showAddDialog(it)
         }
         main_recyclerView.adapter = adapter
         main_recyclerView.layoutManager = LinearLayoutManager(this)
@@ -105,9 +106,22 @@ class MainActivity : AppCompatActivity(),
         newFragment.show(fragmentManager, "dialog")
     }
 
-    fun showAddDialog() {
-        val fragmentManager = supportFragmentManager
-        val newFragment = AddCustomDialog()
-        newFragment.show(fragmentManager, "dialog")
+    fun showAddDialog(it: View) {
+//        val fragmentManager = supportFragmentManager
+//        val newFragment = AddCustomDialog()
+//        newFragment.show(fragmentManager, "dialog")
+        AddProdActivity.startActivity(this, it)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            AddProdActivity.intent_requestCode -> data?.let {
+                viewModel.addProduct(it.getParcelableExtra<Product>("AN_OBJECT"))
+                adapter.clearAll()
+
+            }
+        }
+    }
+
 }

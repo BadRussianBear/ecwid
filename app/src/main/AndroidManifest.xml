@@ -20,5 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name="com.xMitternachtx.ecwid.ui.DetailActivity" />
+        <activity android:name="com.xMitternachtx.ecwid.ui.AddProdActivity" />
     </application>
 </manifest>
