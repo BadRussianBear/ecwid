@@ -43,7 +43,15 @@ class AddProdActivity: AppCompatActivity() {
         binding.detailToolbar.toolbar_home?.toolbar_title?.text = "Add product"
         binding.detailToolbar.toolbar_home?.setOnClickListener { onBackPressed() }
         binding.btnSignup.setOnClickListener{
-            var new_prod = Product(0, input_name.text.toString(), input_pay.text.toString(), input_description.text.toString(), "")
+
+            var num = {
+                if(input_number.text.toString().equals("")){
+                    0
+                }else{
+                    Integer.parseInt(input_number.text.toString())
+                }
+            };
+            var new_prod = Product(0, input_name.text.toString(), input_pay.text.toString(), num.invoke(), input_description.text.toString(), "")
             intent.putExtra("AN_OBJECT", new_prod)
             setResult(intent_requestCode, intent)
             onBackPressed()

@@ -21,7 +21,7 @@ android {
 
         kapt {
             arguments {
-                arg("room.schemaLocation", "1")
+                arg("room.schemaLocation", "2")
             }
 
         }
