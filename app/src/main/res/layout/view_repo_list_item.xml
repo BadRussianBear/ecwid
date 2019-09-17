@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackground"
+        android:transitionName="trans"
         android:orientation="horizontal">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -51,6 +52,16 @@
             android:layout_alignLeft="@+id/person_name"
             android:textColor="@color/cardview_shadow_start_color"
             android:layout_alignStart="@+id/person_name" />
+        <ImageButton
+            android:id="@+id/moreBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/more"
+            android:background="@null"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="more_click"
+            />
 
         <View
             android:layout_width="match_parent"

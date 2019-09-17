@@ -14,6 +14,7 @@ class ProductViewHolder(
 
     interface Delegate {
         fun onItemClick(product: Product, view: View, adapterPosition: Int)
+        fun onMoreClick(product: Product, view: View, adapterPosition: Int)
     }
 
     private lateinit var product: Product
@@ -29,11 +30,14 @@ class ProductViewHolder(
 
     private fun drawUI() {
         binding?.product = product
+        binding?.moreBtn?.setOnClickListener{
+            delegate.onMoreClick(product, view, this.adapterPosition)
+        }
         binding?.executePendingBindings()
+
     }
 
     override fun onClick(view: View) {
-
         delegate.onItemClick(product, view, this.adapterPosition)
     }
 

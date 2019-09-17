@@ -3,7 +3,6 @@ package com.xMitternachtx.ecwid.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -20,6 +19,7 @@ import com.xMitternachtx.ecwid.viewmodels.MainActivityViewModel
 import com.xMitternachtx.ecwid.viewmodels.ViewModelFactory
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.view_repo_list_item.*
 import javax.inject.Inject
 
 
@@ -41,12 +41,10 @@ class MainActivity : AppCompatActivity(),
     override fun onRemoveClick(dialog: DialogFragment) {
         adapter.delItemFromList(viewModel.getProduct(), viewModel.getPosition())
         viewModel.delProd(viewModel.getProduct())
-
     }
 
     override fun onEditClick(dialog: DialogFragment) {
-        DetailActivity.startActivity(this, viewModel.getProduct())
-
+        showAddDialog(viewModel.getView() ,viewModel.getProduct())
     }
 
     @Inject
@@ -67,14 +65,15 @@ class MainActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
 
         main_fab.setOnClickListener{
-            showAddDialog(it)
+            var product = Product(0, "", "", 0, "", "")
+            showAddDialog(it, product)
         }
         main_recyclerView.adapter = adapter
         main_recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     fun checkFirstRun() {
-        prefs = getSharedPreferences("com.carllewis14", MODE_PRIVATE);
+        prefs = getSharedPreferences("com.xMitternachtx", MODE_PRIVATE)
     }
 
     //dont ask, just inject to db
@@ -94,10 +93,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onItemClick(product: Product, view: View, adapterPosition: Int) {
-        showDialog()
+        DetailActivity.startActivity(this, product)
+    }
+
+    override fun onMoreClick(product: Product, view: View, adapterPosition: Int) {
         viewModel.setProduct(product, adapterPosition)
         viewModel.setView(view)
-
+        showDialog()
     }
 
     fun showDialog() {
@@ -106,22 +108,17 @@ class MainActivity : AppCompatActivity(),
         newFragment.show(fragmentManager, "dialog")
     }
 
-    fun showAddDialog(it: View) {
-//        val fragmentManager = supportFragmentManager
-//        val newFragment = AddCustomDialog()
-//        newFragment.show(fragmentManager, "dialog")
-        AddProdActivity.startActivity(this, it)
+    fun showAddDialog(it: View, product: Product) {
+        AddProdActivity.startActivity(this, it, product)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             AddProdActivity.intent_requestCode -> data?.let {
-                viewModel.addProduct(it.getParcelableExtra<Product>("AN_OBJECT"))
+                viewModel.addProduct(it.getParcelableExtra("prod"))
                 adapter.clearAll()
-
             }
         }
     }
-
 }

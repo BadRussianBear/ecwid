@@ -3,6 +3,7 @@ package com.xMitternachtx.ecwid.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import com.xMitternachtx.ecwid.viewmodels.AddProdActivityViewModel
 import com.xMitternachtx.ecwid.viewmodels.ViewModelFactory
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.add_prod.*
+import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.toolbar.view.*
 import javax.inject.Inject
 
@@ -30,13 +32,29 @@ class AddProdActivity: AppCompatActivity() {
 
     private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(AddProdActivityViewModel::class.java) }
     private lateinit var binding: AddProdBinding
+    private lateinit var prod: Product
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.add_prod)
         binding.lifecycleOwner = this
         initializeListeners()
+        initUI()
         startCircularRevealed(savedInstanceState)
+    }
+
+    private fun initUI(){
+        prod = intent.getParcelableExtra<Product>("prod")
+        input_name.setText(prod.name)
+        input_pay.setText(prod.cost)
+        input_number.setText(prod.num.toString())
+        input_description.setText(prod.description)
+        var txt = when (prod.name){
+            "" ->  "New product"
+            else -> prod.name
+        }
+        binding.detailToolbar.toolbar_title?.text = txt
+        //
     }
 
     private fun initializeListeners() {
@@ -51,8 +69,8 @@ class AddProdActivity: AppCompatActivity() {
                     Integer.parseInt(input_number.text.toString())
                 }
             };
-            var new_prod = Product(0, input_name.text.toString(), input_pay.text.toString(), num.invoke(), input_description.text.toString(), "")
-            intent.putExtra("AN_OBJECT", new_prod)
+            var new_prod = Product(prod.id, input_name.text.toString(), input_pay.text.toString(), num.invoke(), input_description.text.toString(), "")
+            intent.putExtra("prod", new_prod)
             setResult(intent_requestCode, intent)
             onBackPressed()
         }
@@ -82,8 +100,9 @@ class AddProdActivity: AppCompatActivity() {
     companion object {
         const val intent_requestCode = 1001
 
-        fun startActivity(activity: Activity, view: View) {
+        fun startActivity(activity: Activity, view: View, product: Product) {
             val intent = Intent(activity, AddProdActivity::class.java)
+            intent.putExtra("prod", product)
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, view, ViewCompat.getTransitionName(view)!!)
             activity.startActivityForResult(intent, intent_requestCode, options.toBundle())
         }
