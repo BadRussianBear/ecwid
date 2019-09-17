@@ -8,7 +8,7 @@ import com.xMitternachtx.ecwid.model.Product
 @Dao
 interface ProductDao {
 
-    @Query("SELECT * FROM products")
+    @Query("SELECT * FROM products ORDER BY id DESC")
     fun queryProducts(): LiveData<List<Product>>
 
     @Query("SELECT * FROM products WHERE name = :name")

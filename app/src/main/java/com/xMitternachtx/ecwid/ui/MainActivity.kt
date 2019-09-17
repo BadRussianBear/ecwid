@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.xMitternachtx.ecwid.R
 import com.xMitternachtx.ecwid.adapter.ProductAdapter
@@ -19,33 +21,13 @@ import com.xMitternachtx.ecwid.viewmodels.MainActivityViewModel
 import com.xMitternachtx.ecwid.viewmodels.ViewModelFactory
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.view_repo_list_item.*
 import javax.inject.Inject
 
 
 @Suppress("SpellCheckingInspection")
 class MainActivity : AppCompatActivity(),
         ProductViewHolder.Delegate,
-        CustomDialog.NoticeDialogListener,
-        AddCustomDialog.NoticeDialogListener {
-
-
-    override fun okClick() {
-
-    }
-
-    override fun cancelClick() {
-
-    }
-
-    override fun onRemoveClick(dialog: DialogFragment) {
-        adapter.delItemFromList(viewModel.getProduct(), viewModel.getPosition())
-        viewModel.delProd(viewModel.getProduct())
-    }
-
-    override fun onEditClick(dialog: DialogFragment) {
-        showAddDialog(viewModel.getView() ,viewModel.getProduct())
-    }
+        CustomDialog.NoticeDialogListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -54,25 +36,42 @@ class MainActivity : AppCompatActivity(),
     private val adapter by lazy { ProductAdapter(this) }
 
 
-    var prefs: SharedPreferences? = null
+    private var prefs: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         checkFirstRun()
+        setBindings()
+        setUI()
+    }
+
+    private fun setBindings(){
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+    }
 
+    private fun setUI(){
         main_fab.setOnClickListener{
-            var product = Product(0, "", "", 0, "", "")
+            val product = Product(0, "", "", 0, "", "")
             showAddDialog(it, product)
         }
         main_recyclerView.adapter = adapter
         main_recyclerView.layoutManager = LinearLayoutManager(this)
+        main_recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(main_recyclerView, dx, dy)
+                if (dy > 0 && main_fab.visibility == View.VISIBLE) {
+                    main_fab.hide()
+                } else if (dy < 0 && main_fab.visibility != View.VISIBLE) {
+                    main_fab.show()
+                }
+            }
+        })
     }
 
-    fun checkFirstRun() {
+    private fun checkFirstRun() {
         prefs = getSharedPreferences("com.xMitternachtx", MODE_PRIVATE)
     }
 
@@ -102,13 +101,13 @@ class MainActivity : AppCompatActivity(),
         showDialog()
     }
 
-    fun showDialog() {
+    private fun showDialog() {
         val fragmentManager = supportFragmentManager
         val newFragment = CustomDialog()
         newFragment.show(fragmentManager, "dialog")
     }
 
-    fun showAddDialog(it: View, product: Product) {
+    private fun showAddDialog(it: View, product: Product) {
         AddProdActivity.startActivity(this, it, product)
     }
 
@@ -116,9 +115,22 @@ class MainActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             AddProdActivity.intent_requestCode -> data?.let {
-                viewModel.addProduct(it.getParcelableExtra("prod"))
+                val prod: Product = it.getParcelableExtra("prod")
+                viewModel.addProduct(prod)
                 adapter.clearAll()
+                Snackbar.make(main_fab, prod.name+" Added", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null)
+                    .show()
             }
         }
+    }
+
+    override fun onRemoveClick(dialog: DialogFragment) {
+        adapter.delItemFromList(viewModel.getProduct(), viewModel.getPosition())
+        viewModel.delProd(viewModel.getProduct())
+    }
+
+    override fun onEditClick(dialog: DialogFragment) {
+        showAddDialog(viewModel.getView() ,viewModel.getProduct())
     }
 }
