@@ -24,6 +24,7 @@
             android:layout_marginTop="8dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:paddingStart="8dp"
             android:transitionName="trans"
             android:src="@drawable/ic_launcher_background" />
 
@@ -57,13 +58,13 @@
 
         <ImageButton
             android:id="@+id/moreBtn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/more"
             android:background="@null"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:onClick="more_click"
+            android:paddingEnd="8dp"
             />
         <View
             android:layout_width="match_parent"
